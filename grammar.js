@@ -69,7 +69,7 @@ module.exports = grammar({
     reference: $ => seq('::', choice($.ident, seq(optional($.sign), $.number))),
     sign: $ => choice('+', '-'),
 
-    numberRange: $ => seq('range', $.string, '-', $.string),
+    numberRange: $ => seq('range', $.string, '-', $.string, optional(seq('base', $.number))),
 
     codePoint: $ => seq('U', '+', /[\p{Alpha}\p{Nd}_]+/),
 
