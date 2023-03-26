@@ -1,9 +1,8 @@
+(comment) @comment.line
 (number) @number
 (string) @string
-(stringOneChar) @string
-(comment) @comment
-
-"|" @punctuation.delimiter
+(bool_setting) @type
+(ident)
 
 [
   "-"
@@ -17,8 +16,18 @@
 ] @operator
 
 [
+  "."
+  "^"
+  "$"
+  "%"
+  ("!" "%")
+] @constant.language
+
+[
   "("
   ")"
+  "["
+  ("!" "[")
   "["
   "]"
   "{"
@@ -26,18 +35,37 @@
 ]  @punctuation.bracket
 
 [
-  "U"
   "let"
+  "enable"
+  "disable"
+] @keyword.other
+
+"|" @keyword.operator
+
+[
+  "U"
   "lazy"
   "greedy"
   "range"
   "base"
   "atomic"
-  "enable"
-  "disable"
 ;  "if"
 ;  "else"
 ;  "recursion"
   "regex"
 ;  "test"
-] @keyword
+] @keyword.control
+
+[
+  "U"
+  "lazy"
+  "greedy"
+  "range"
+  "base"
+  "atomic"
+;  "if"
+;  "else"
+;  "recursion"
+  "regex"
+;  "test"
+] @keyword.control

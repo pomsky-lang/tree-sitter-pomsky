@@ -3,79 +3,90 @@ module.exports = grammar({
 
   extras: $ => [$.comment, /[\s\p{Zs}\uFEFF\u2060\u200B]/],
 
-  precedences: $ => [['repetition', 'lookaround'], ['alt']],
+  precedences: $ => [['repetition', 'alt', 'lookaround']],
 
-  conflicts: $ => [[$.expr]],
+  inline: $ => [$._expr, $._char_set_inner, $._single_char, $._repetition_count],
+
+  conflicts: $ => [],
+
+  supertypes: $ => [$.stmt, $.fix_expr, $.atom_expr],
 
   rules: {
-    source_file: $ => optional($.expr),
+    source_file: $ => optional($._expr),
 
-    expr: $ => choice(seq($.stmt, optional($.expr)), $.orExpr),
+    _expr: $ => choice(seq(repeat1($.stmt), optional($.or_expr)), $.or_expr),
 
     comment: $ => token(seq('#', /.*/)),
 
-    stmt: $ => choice($.letDecl, $.modifier),
+    stmt: $ => choice($.let_decl, $.modifier),
 
-    letDecl: $ => seq('let', $.ident, '=', optional($.orExpr), ';'),
+    let_decl: $ =>
+      seq('let', field('name', $.ident), '=', field('value', optional($.or_expr)), ';'),
 
-    modifier: $ => seq($.modifierKw, $.boolSetting, ';'),
-    modifierKw: $ => choice('enable', 'disable'),
-    boolSetting: $ => choice('unicode', 'lazy'),
+    modifier: $ => seq(field('type', $.modifier_kw), field('setting', $.bool_setting), ';'),
+    modifier_kw: $ => choice('enable', 'disable'),
+    bool_setting: $ => choice('unicode', 'lazy'),
 
-    orExpr: $ => seq(optional('|'), $.alternatives),
+    or_expr: $ =>
+      seq(optional('|'), prec.left('alt', seq($.alternative, repeat(seq('|', $.alternative))))),
+    alternative: $ => prec.left('alt', repeat1($.fix_expr)),
 
-    alternatives: $ => prec.left('alt', seq($.alternative, repeat(seq('|', $.alternative)))),
-    alternative: $ => prec.left('alt', repeat1($.fixExpr)),
+    fix_expr: $ => choice($.lookaround_expr, $.repetition_expr),
 
-    fixExpr: $ => choice($.lookaroundExpr, $.repetitionExpr),
+    lookaround_expr: $ =>
+      prec.right('lookaround', seq(seq(optional('!'), choice('<<', '>>')), optional($._expr))),
 
-    lookaroundExpr: $ => prec.right('lookaround', seq($.lookaroundPrefix, optional($.expr))),
-    lookaroundPrefix: $ => seq(optional('!'), choice('<<', '>>')),
+    repetition_expr: $ =>
+      prec.left(
+        'repetition',
+        seq($.atom_expr, optional(seq($._repetition_count, optional(choice('lazy', 'greedy'))))),
+      ),
+    _repetition_count: $ => choice('*', '+', '?', $.repetition_braces),
+    repetition_braces: $ =>
+      seq(
+        '{',
+        choice(
+          field('count', $.number),
+          seq(optional(field('lower', $.number)), ',', optional(field('upper', $.number))),
+        ),
+        '}',
+      ),
 
-    repetitionExpr: $ => prec.left('repetition', seq($.atomExpr, optional($.repetitionSuffix))),
-    repetitionSuffix: $ => seq($.repetitionCount, optional($.quantifier)),
-    repetitionCount: $ => choice('*', '+', '?', $.repetitionBraces),
-    repetitionBraces: $ =>
-      seq('{', choice($.number, seq(optional($.number), ',', optional($.number))), '}'),
-    quantifier: $ => choice('lazy', 'greedy'),
-
-    atomExpr: $ =>
+    atom_expr: $ =>
       choice(
         $.group,
         $.string,
-        $.charSet,
-        $.inlineRegex,
+        $.char_set,
+        $.inline_regex,
         $.boundary,
         $.reference,
-        $.numberRange,
-        $.codePoint,
+        $.number_range,
+        $.code_point,
         $.ident,
         '.',
       ),
 
-    group: $ => seq(optional($.groupKind), '(', optional($.expr), ')'),
-    groupKind: $ => choice(seq(':', optional($.ident)), 'atomic'),
+    group: $ => seq(optional($.group_kind), '(', optional($._expr), ')'),
+    group_kind: $ => choice(seq(':', optional($.ident)), 'atomic'),
 
-    charSet: $ => seq(optional('!'), '[', repeat1($.charSetInner), ']'),
-    charSetInner: $ => choice($.range, $.string, $.codePoint, seq(optional('!'), $.ident)),
-    range: $ => seq($.singleChar, '-', $.singleChar),
-    singleChar: $ => choice($.stringOneChar, $.codePoint, $.nonPrintable),
-    nonPrintable: $ => choice('n', 'r', 't', 'a', 'e', 'f'),
+    char_set: $ => seq(optional('!'), '[', repeat1($._char_set_inner), ']'),
+    _char_set_inner: $ => choice($.range, $.string, $.code_point, seq(optional('!'), $.ident)),
 
-    inlineRegex: $ => seq('regex', $.string),
+    range: $ => seq($._single_char, '-', $._single_char),
+    _single_char: $ => choice($.string, $.code_point, $.ident),
+
+    inline_regex: $ => seq('regex', $.string),
 
     boundary: $ => choice('^', '$', seq(optional('!'), '%')),
 
-    reference: $ => seq('::', choice($.ident, seq(optional($.sign), $.number))),
-    sign: $ => choice('+', '-'),
+    reference: $ => seq('::', choice($.ident, seq(optional(choice('+', '-')), $.number))),
 
-    numberRange: $ => seq('range', $.string, '-', $.string, optional(seq('base', $.number))),
+    number_range: $ => seq('range', $.string, '-', $.string, optional(seq('base', $.number))),
 
-    codePoint: $ => seq('U', '+', /[\p{Alpha}\p{Nd}_]+/),
+    code_point: $ => seq('U', '+', /[\p{Alpha}\p{Nd}_]+/),
 
     ident: $ => /[\p{Alpha}_][\p{Alpha}\p{Nd}_]*/,
     number: $ => /[0-9][\p{Alpha}\p{Nd}_]*/,
     string: $ => choice(/"([^"\\]|\\.)*"/s, /'[^']*'/),
-    stringOneChar: $ => $.string,
   },
 })

@@ -1,5 +1,79 @@
 [
   {
+    "type": "atom_expr",
+    "named": true,
+    "subtypes": [
+      {
+        "type": ".",
+        "named": false
+      },
+      {
+        "type": "boundary",
+        "named": true
+      },
+      {
+        "type": "char_set",
+        "named": true
+      },
+      {
+        "type": "code_point",
+        "named": true
+      },
+      {
+        "type": "group",
+        "named": true
+      },
+      {
+        "type": "ident",
+        "named": true
+      },
+      {
+        "type": "inline_regex",
+        "named": true
+      },
+      {
+        "type": "number_range",
+        "named": true
+      },
+      {
+        "type": "reference",
+        "named": true
+      },
+      {
+        "type": "string",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "fix_expr",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "lookaround_expr",
+        "named": true
+      },
+      {
+        "type": "repetition_expr",
+        "named": true
+      }
+    ]
+  },
+  {
+    "type": "stmt",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "let_decl",
+        "named": true
+      },
+      {
+        "type": "modifier",
+        "named": true
+      }
+    ]
+  },
+  {
     "type": "alternative",
     "named": true,
     "fields": {},
@@ -8,76 +82,14 @@
       "required": true,
       "types": [
         {
-          "type": "fixExpr",
+          "type": "fix_expr",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "alternatives",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "alternative",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "atomExpr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "boundary",
-          "named": true
-        },
-        {
-          "type": "charSet",
-          "named": true
-        },
-        {
-          "type": "codePoint",
-          "named": true
-        },
-        {
-          "type": "group",
-          "named": true
-        },
-        {
-          "type": "ident",
-          "named": true
-        },
-        {
-          "type": "inlineRegex",
-          "named": true
-        },
-        {
-          "type": "numberRange",
-          "named": true
-        },
-        {
-          "type": "reference",
-          "named": true
-        },
-        {
-          "type": "string",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "boolSetting",
+    "type": "bool_setting",
     "named": true,
     "fields": {}
   },
@@ -87,7 +99,7 @@
     "fields": {}
   },
   {
-    "type": "charSet",
+    "type": "char_set",
     "named": true,
     "fields": {},
     "children": {
@@ -95,22 +107,7 @@
       "required": true,
       "types": [
         {
-          "type": "charSetInner",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "charSetInner",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "codePoint",
+          "type": "code_point",
           "named": true
         },
         {
@@ -129,51 +126,9 @@
     }
   },
   {
-    "type": "codePoint",
+    "type": "code_point",
     "named": true,
     "fields": {}
-  },
-  {
-    "type": "expr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "expr",
-          "named": true
-        },
-        {
-          "type": "orExpr",
-          "named": true
-        },
-        {
-          "type": "stmt",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "fixExpr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "lookaroundExpr",
-          "named": true
-        },
-        {
-          "type": "repetitionExpr",
-          "named": true
-        }
-      ]
-    }
   },
   {
     "type": "group",
@@ -184,18 +139,22 @@
       "required": false,
       "types": [
         {
-          "type": "expr",
+          "type": "group_kind",
           "named": true
         },
         {
-          "type": "groupKind",
+          "type": "or_expr",
+          "named": true
+        },
+        {
+          "type": "stmt",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "groupKind",
+    "type": "group_kind",
     "named": true,
     "fields": {},
     "children": {
@@ -210,7 +169,7 @@
     }
   },
   {
-    "type": "inlineRegex",
+    "type": "inline_regex",
     "named": true,
     "fields": {},
     "children": {
@@ -225,79 +184,83 @@
     }
   },
   {
-    "type": "letDecl",
+    "type": "let_decl",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "ident",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "or_expr",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "lookaround_expr",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
-          "type": "ident",
+          "type": "or_expr",
           "named": true
         },
         {
-          "type": "orExpr",
+          "type": "stmt",
           "named": true
         }
       ]
     }
-  },
-  {
-    "type": "lookaroundExpr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "expr",
-          "named": true
-        },
-        {
-          "type": "lookaroundPrefix",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "lookaroundPrefix",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "modifier",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "boolSetting",
-          "named": true
-        },
-        {
-          "type": "modifierKw",
-          "named": true
-        }
-      ]
+    "fields": {
+      "setting": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "bool_setting",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "modifier_kw",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
-    "type": "modifierKw",
+    "type": "modifier_kw",
     "named": true,
     "fields": {}
   },
   {
-    "type": "nonPrintable",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "numberRange",
+    "type": "number_range",
     "named": true,
     "fields": {},
     "children": {
@@ -316,24 +279,19 @@
     }
   },
   {
-    "type": "orExpr",
+    "type": "or_expr",
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "alternatives",
+          "type": "alternative",
           "named": true
         }
       ]
     }
-  },
-  {
-    "type": "quantifier",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "range",
@@ -344,7 +302,15 @@
       "required": true,
       "types": [
         {
-          "type": "singleChar",
+          "type": "code_point",
+          "named": true
+        },
+        {
+          "type": "ident",
+          "named": true
+        },
+        {
+          "type": "string",
           "named": true
         }
       ]
@@ -355,7 +321,7 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
@@ -365,65 +331,48 @@
         {
           "type": "number",
           "named": true
-        },
-        {
-          "type": "sign",
-          "named": true
         }
       ]
     }
   },
   {
-    "type": "repetitionBraces",
+    "type": "repetition_braces",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "number",
-          "named": true
-        }
-      ]
+    "fields": {
+      "count": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      },
+      "lower": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      },
+      "upper": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
-    "type": "repetitionCount",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "repetitionBraces",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "repetitionExpr",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "atomExpr",
-          "named": true
-        },
-        {
-          "type": "repetitionSuffix",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "repetitionSuffix",
+    "type": "repetition_expr",
     "named": true,
     "fields": {},
     "children": {
@@ -431,39 +380,11 @@
       "required": true,
       "types": [
         {
-          "type": "quantifier",
+          "type": "atom_expr",
           "named": true
         },
         {
-          "type": "repetitionCount",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "sign",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "singleChar",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "codePoint",
-          "named": true
-        },
-        {
-          "type": "nonPrintable",
-          "named": true
-        },
-        {
-          "type": "stringOneChar",
+          "type": "repetition_braces",
           "named": true
         }
       ]
@@ -474,30 +395,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
         {
-          "type": "expr",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "stmt",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "letDecl",
+          "type": "or_expr",
           "named": true
         },
         {
-          "type": "modifier",
+          "type": "stmt",
           "named": true
         }
       ]
@@ -507,21 +413,6 @@
     "type": "string",
     "named": true,
     "fields": {}
-  },
-  {
-    "type": "stringOneChar",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "string",
-          "named": true
-        }
-      ]
-    }
   },
   {
     "type": "!",
@@ -608,10 +499,6 @@
     "named": false
   },
   {
-    "type": "a",
-    "named": false
-  },
-  {
     "type": "atomic",
     "named": false
   },
@@ -628,15 +515,7 @@
     "named": false
   },
   {
-    "type": "e",
-    "named": false
-  },
-  {
     "type": "enable",
-    "named": false
-  },
-  {
-    "type": "f",
     "named": false
   },
   {
@@ -656,16 +535,8 @@
     "named": false
   },
   {
-    "type": "n",
-    "named": false
-  },
-  {
     "type": "number",
     "named": true
-  },
-  {
-    "type": "r",
-    "named": false
   },
   {
     "type": "range",
@@ -673,10 +544,6 @@
   },
   {
     "type": "regex",
-    "named": false
-  },
-  {
-    "type": "t",
     "named": false
   },
   {
