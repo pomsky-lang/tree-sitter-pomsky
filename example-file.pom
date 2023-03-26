@@ -1,0 +1,55 @@
+# Expression
+
+let Expression = Statement* OrExpression;
+
+let Statement =
+    | LetDeclaration
+    | Modifier;
+
+let LetDeclaration = 'let' Name '=' OrExpression ';';
+
+let Modifier = ModifierKeyword BooleanSetting ';';
+
+let ModifierKeyword =
+    | 'enable'
+    | 'disable';
+
+let BooleanSetting = 'lazy';
+
+# OrExpression
+
+let OrExpression = ('|'? Alternatives)?;
+
+let Alternatives = Alternative ('|' Alternative)*;
+
+let Alternative = FixExpression+;
+
+# FixExpression
+
+let FixExpression =
+    | LookaroundPrefix Expression
+    | AtomExpression RepetitionSuffix?;
+
+# Lookaround
+
+let LookaroundPrefix =
+    | '!'? '<<'
+    | '!'? '>>';
+
+# Repetition
+
+let RepetitionSuffix = RepetitionCount Quantifier?;
+
+let RepetitionCount =
+    | '*'
+    | '+'
+    | '?'
+    | RepetitionBraces;
+
+let RepetitionBraces =
+    | '{' Number '}'
+    | '{' Number? ',' Number? '}';
+
+let Quantifier =
+    | 'greedy'
+    | 'lazy';
